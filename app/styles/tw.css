@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *:focus {
+    @apply outline-none ring ring-red-400;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    *:focus {
+      @apply outline-none ring ring-green-400;
+    }
+  }
+
+  .capitalize-first::first-letter {
+    @apply uppercase;
+  }
+}
