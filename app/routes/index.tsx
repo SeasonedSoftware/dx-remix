@@ -59,42 +59,57 @@ export default function Index() {
   let data = useLoaderData<IndexData>();
 
   return (
-    <div className="remix__page">
-      <main>
-        <h2>Welcome to Remix!</h2>
-        <p>We're stoked that you're here. 🥳</p>
-        <p>
-          Feel free to take a look around the code to see how Remix does things,
-          it might be a bit different than what you’re used to. When you're
-          ready to dive deeper, we've got plenty of resources to get you
-          up-and-running quickly.
-        </p>
-        <p>
-          Check out all the demos in this starter, and then just delete the{" "}
-          <code>app/routes/demos</code> and <code>app/styles/demos</code>{" "}
-          folders when you're ready to turn this into your next project.
-        </p>
+    <div className="flex flex-col items-center justify-center w-screen min-h-screen p-4 overflow-y-auto bg-gray-50 dark:bg-gray-900 dark:text-white">
+      <header className="w-full pb-3 border-b border-gray-200 dark:border-gray-800">
+        <h1 className="text-4xl font-thin text-center text-red-800 dark:text-green-600">
+          Stories
+        </h1>
+      </header>
+      <main className="flex flex-col items-center flex-grow w-full gap-8 pt-6 md:flex-row md:items-start">
+        <section className="flex flex-col items-center justify-center w-full bg-white md:w-96 dark:bg-gray-800">
+          {/* <StoryForm setEditing={setEditing} list={data} editing={editing} /> */}
+        </section>
+        <div className="flex flex-col w-full gap-4 md:w-96">
+          {/*
+          <StoriesList
+            items={storyGroups.ready ?? []}
+            title="Ready for development"
+            setEditing={setEditing}
+          />
+          <StoriesList
+            items={(storyGroups.draft ?? []).concat(storyGroups.draft_with_scenarios ?? [])}
+            title="Draft"
+            setEditing={setEditing}
+          />
+        */}
+        </div>
+        <div className="flex flex-col w-full gap-4 md:w-96">
+          { /*
+          <StoriesList
+            items={storyGroups.development ?? []}
+            title="In development"
+            setEditing={setEditing}
+          />
+          <StoriesList
+            items={storyGroups.approved ?? []}
+            title="Done"
+            setEditing={setEditing}
+          />
+          */
+          }
+        </div>
       </main>
-      <aside>
-        <h2>Demos In This App</h2>
-        <ul>
-          {data.demos.map(demo => (
-            <li key={demo.to} className="remix__page__resource">
-              <Link to={demo.to} prefetch="intent">
-                {demo.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <h2>Resources</h2>
-        <ul>
-          {data.resources.map(resource => (
-            <li key={resource.url} className="remix__page__resource">
-              <a href={resource.url}>{resource.name}</a>
-            </li>
-          ))}
-        </ul>
-      </aside>
+      <footer className="mt-12 text-center text-gray-400 text-xs leading-loose">
+        <p>
+          Created with{' '}
+          <a
+            className="text-gray-900 dark:text-gray-100"
+            href="http://seasoned.cc"
+          >
+            Seasoned DX Framework
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }
