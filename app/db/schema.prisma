@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Story {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  asA       String   @map("as_a")
+  iWant     String   @map("i_want")
+  soThat    String   @map("so_that")
+  createdAt DateTime @unique @default(now()) @map("created_at") @db.Timestamp(6)
+  position  Float    @unique @default(dbgenerated("(nextval('story_position'::regclass))::double precision"))
+
+  scenarios        Scenario[]
+  storyReady       StoryReady?
+  storyDevelopment StoryDevelopment?
+  @@unique([asA, iWant, soThat])
+  @@map("story")
+}
+
+model Scenario {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  story       Story    @relation(fields: [storyId], references: [id])
+  storyId     String   @map("story_id") @db.Uuid
+  description String
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  approval ScenarioApproval[]
+  @@unique([storyId, description])
+  @@map("scenario")
+}
+
+model ScenarioApproval {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  scenario   Scenario @relation(fields: [scenarioId], references: [id])
+  scenarioId String   @map("scenario_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  @@unique([scenarioId])
+  @@map("scenario_approval")
+}
+
+model StoryReady {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  story     Story    @relation(fields: [storyId], references: [id])
+  storyId   String   @map("story_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  @@unique([storyId])
+  @@map("story_ready")
+}
+
+model StoryDevelopment {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  story     Story    @relation(fields: [storyId], references: [id])
+  storyId   String   @map("story_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  @@unique([storyId])
+  @@map("story_development")
+}
