@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { PrismaClient, Story as DbStory } from '@prisma/client'
+import { Story as DbStory } from '@prisma/client'
 import type { MetaFunction, LoaderFunction } from 'remix'
 import { useLoaderData, json } from 'remix'
 import groupBy from 'lodash/groupBy'
 import StoriesList from '~/components/stories-list'
+import { db } from '~/db/prisma.server'
 
 type StoryState =
   | 'draft'
@@ -14,8 +15,7 @@ type StoryState =
 type Story = Omit<DbStory, 'position'> & { state: StoryState }
 
 export let loader: LoaderFunction = async () => {
-  const prisma = new PrismaClient()
-  const stories: Story[] = await prisma.$queryRaw`
+  const stories: Story[] = await db.$queryRaw`
     SELECT
       s.id,
       as_a as "asA",
