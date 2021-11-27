@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/outline'
 
-import type { Story } from '~/routes/index'
+import type { Story } from '~/stories/types'
 
 type Props = {
   story: Story
@@ -48,7 +48,7 @@ export default function StoryItem({
           .
         </p>
         <p className="mt-2 text-xs font-semibold text-right text-gray-900 text-opacity-60 dark:text-white dark:text-opacity-50">
-          {story.createdAt}
+          {new Date(story.createdAt).toLocaleDateString()}
         </p>
       </div>
       {story.state === 'draft' && (

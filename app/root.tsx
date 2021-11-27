@@ -1,14 +1,7 @@
 import * as React from 'react'
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useCatch,
-  useLocation,
-} from 'remix'
+import { Links, LiveReload, Meta, Outlet } from 'remix'
+import { Scripts, ScrollRestoration } from 'remix'
+import { useCatch, useLocation } from 'remix'
 import type { LinksFunction } from 'remix'
 
 import globalStylesUrl from '~/styles/global.css'
@@ -62,9 +55,7 @@ function Layout({ children }: React.PropsWithChildren<{}>) {
           Stories
         </h1>
       </header>
-      <main className="flex flex-col items-center flex-grow w-full gap-8 pt-6 md:flex-row md:items-start">
-        {children}
-      </main>
+      {children}
       <footer className="mt-12 text-xs leading-loose text-center text-gray-400">
         <p>
           Created with{' '}

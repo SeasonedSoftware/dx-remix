@@ -1,5 +1,6 @@
 import StoryItem from '~/components/story-item'
-import type { Story } from '~/routes/index'
+
+import type { Story } from '~/stories/types'
 
 type ChangePositionFn = (
   storyId: string,
