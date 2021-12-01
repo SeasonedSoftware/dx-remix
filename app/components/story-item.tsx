@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Form } from 'remix'
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/outline'
 
 import type { Story } from '~/stories/types'
@@ -6,36 +7,44 @@ import type { Story } from '~/stories/types'
 type Props = {
   story: Story
   setEditing: (a: string | null) => void
-  onClickBefore: React.MouseEventHandler
-  onClickAfter: React.MouseEventHandler
+  anchorBefore?: string
+  anchorAfter?: string
 }
 export default function StoryItem({
   story,
   setEditing,
-  onClickBefore,
-  onClickAfter,
+  anchorBefore,
+  anchorAfter,
 }: Props) {
   return (
     <details className="w-full cursor-pointer group">
       <summary className="flex items-start justify-between p-4 py-3 text-xl font-semibold">
         <span className="capitalize-first">{story.iWant}</span>
         <div className="flex border divide-x rounded">
-          <button
-            type="button"
-            className="p-2 group-first:hidden"
-            onClick={onClickBefore}
-            aria-label="Mover para cima"
-          >
-            <ArrowUpIcon className="w-3 h-3" />
-          </button>
-          <button
-            type="button"
-            className="p-2 group-last:hidden"
-            onClick={onClickAfter}
-            aria-label="Mover para baixo"
-          >
-            <ArrowDownIcon className="w-3 h-3" />
-          </button>
+          <Form method="post" action="/set-position">
+            <input type="hidden" value={story.id} name="storyId" />
+            <input type="hidden" value={anchorBefore} name="storyAnchor" />
+            <input type="hidden" value="before" name="relativePosition" />
+            <button
+              type="submit"
+              className="p-2 group-first:hidden"
+              aria-label="Mover para cima"
+            >
+              <ArrowUpIcon className="w-3 h-3" />
+            </button>
+          </Form>
+          <Form method="post" action="/set-position">
+            <input type="hidden" value={story.id} name="storyId" />
+            <input type="hidden" value={anchorAfter} name="storyAnchor" />
+            <input type="hidden" value="after" name="relativePosition" />
+            <button
+              type="submit"
+              className="p-2 group-last:hidden"
+              aria-label="Mover para baixo"
+            >
+              <ArrowDownIcon className="w-3 h-3" />
+            </button>
+          </Form>
         </div>
       </summary>
       <div
@@ -54,7 +63,7 @@ export default function StoryItem({
       {story.state === 'draft' && (
         <div className="flex flex-col p-4">
           <button
-            onClick={async () => {}}
+            onClick={async () => { }}
             className="p-2 transition-all bg-green-500 rounded hover:bg-green-600"
           >
             mark as ready to start
@@ -64,7 +73,7 @@ export default function StoryItem({
       {story.state === 'ready' && (
         <div className="flex flex-col p-4">
           <button
-            onClick={async () => {}}
+            onClick={async () => { }}
             className="p-2 transition-all bg-green-500 rounded hover:bg-green-600"
           >
             start development

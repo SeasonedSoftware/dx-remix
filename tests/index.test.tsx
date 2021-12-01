@@ -2,7 +2,8 @@ import Index from '~/routes'
 import { render, screen } from '@testing-library/react'
 
 jest.mock('remix', () => ({
-  useLoaderData: jest.fn(() => [])
+  useLoaderData: () => [],
+  useActionData: () => undefined
 }))
 
 describe('Index', () => {

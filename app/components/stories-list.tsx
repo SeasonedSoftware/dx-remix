@@ -2,29 +2,12 @@ import StoryItem from '~/components/story-item'
 
 import type { Story } from '~/stories/types'
 
-type ChangePositionFn = (
-  storyId: string,
-  relativePosition: 'before' | 'after',
-  storyAnchor?: string
-) => () => Promise<void>
-
 type Props = {
   items: Story[]
   title: string
   setEditing: (a: string | null) => void
 }
 export default function StoriesList({ items, title, setEditing }: Props) {
-  const changePosition: ChangePositionFn =
-    (storyId, relativePosition, storyAnchor) => async () => {
-      // if (!storyAnchor) return
-      // const list = await stories.setPosition.run({
-      //   storyAnchor,
-      //   relativePosition,
-      //   storyId,
-      // })
-      // mutate('stories', list, false)
-    }
-
   return (
     <div className="flex flex-col">
       {title && <h3 className="block mb-2 text-xl">{title}</h3>}
@@ -35,16 +18,8 @@ export default function StoriesList({ items, title, setEditing }: Props) {
               key={story.id}
               story={story}
               setEditing={setEditing}
-              onClickBefore={changePosition(
-                story.id,
-                'before',
-                items[idx - 1]?.id
-              )}
-              onClickAfter={changePosition(
-                story.id,
-                'after',
-                items[idx + 1]?.id
-              )}
+              anchorBefore={items[idx - 1]?.id}
+              anchorAfter={items[idx + 1]?.id}
             />
           ))
         ) : (
