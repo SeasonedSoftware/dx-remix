@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Links, LiveReload, LoaderFunction, Meta, Outlet } from 'remix'
+import { Form, Links, LiveReload, LoaderFunction, Meta, Outlet } from 'remix'
 import { Scripts, ScrollRestoration } from 'remix'
 import { useCatch, useLocation } from 'remix'
 import type { LinksFunction } from 'remix'
@@ -65,6 +65,9 @@ function Layout({ children }: React.PropsWithChildren<{}>) {
         <h1 className="text-4xl font-thin text-center text-red-800 dark:text-green-600">
           Stories
         </h1>
+        <Form action="/logout">
+          <button type="submit">Logout</button>
+        </Form>
       </header>
       {children}
       <footer className="mt-12 text-xs leading-loose text-center text-gray-400">

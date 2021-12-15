@@ -11,6 +11,7 @@ import StoryForm from '~/components/story-form'
 
 import type { Story } from '~/stories/types'
 import type { MetaFunction, LoaderFunction, ActionFunction } from 'remix'
+import { requireUser } from './login'
 
 export let meta: MetaFunction = () => {
   return {
@@ -19,7 +20,8 @@ export let meta: MetaFunction = () => {
   }
 }
 
-export let loader: LoaderFunction = async () => {
+export let loader: LoaderFunction = async ({ request }) => {
+  await requireUser(request)
   return getStories()
 }
 
