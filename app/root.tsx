@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Links, LiveReload, Meta, Outlet } from 'remix'
+import { Links, LiveReload, LoaderFunction, Meta, Outlet } from 'remix'
 import { Scripts, ScrollRestoration } from 'remix'
 import { useCatch, useLocation } from 'remix'
 import type { LinksFunction } from 'remix'
@@ -8,6 +8,17 @@ import globalStylesUrl from '~/styles/global.css'
 
 export let links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: globalStylesUrl }]
+}
+
+export let loader: LoaderFunction = async ({ request }) => {
+  let url = new URL(request.url)
+  if (url.pathname === '/') {
+    return new Response('Redirected', {
+      status: 301,
+      headers: { location: '/stories' },
+    })
+  }
+  return null
 }
 
 export default function App() {

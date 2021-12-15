@@ -1,6 +1,7 @@
 import { db } from '~/db/prisma.server'
+import head from 'lodash/head'
 
-async function getStories() {
+async function getStories(id: string | null = null) {
   return db.$queryRaw`
       SELECT
         s.id,
@@ -22,7 +23,10 @@ async function getStories() {
           ELSE 'draft_with_scenarios'
         END as state
       FROM story s
+      WHERE coalesce(s.id = ${id}, true)
       ORDER BY position ASC`
 }
 
-export { getStories }
+const getStory = async (id: string) => head(await getStories(id))
+
+export { getStories, getStory }

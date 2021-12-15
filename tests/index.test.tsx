@@ -1,9 +1,9 @@
-import Index from '~/routes'
+import Index from '~/routes/stories'
 import { render, screen } from '@testing-library/react'
 
 jest.mock('remix', () => ({
   useLoaderData: () => [],
-  useActionData: () => undefined
+  useActionData: () => undefined,
 }))
 
 describe('Index', () => {
@@ -28,5 +28,4 @@ describe('Index', () => {
       screen.getAllByText(/To write a new feature/).length
     ).toBeGreaterThanOrEqual(2)
   })
-
 })
