@@ -1,7 +1,8 @@
 import { db } from '~/db/prisma.server'
 import head from 'lodash/head'
+import type { Story } from './types'
 
-async function getStories(id: string | null = null) {
+async function getStories(id: string | null = null): Promise<Story[]> {
   return db.$queryRaw`
       SELECT
         s.id,
