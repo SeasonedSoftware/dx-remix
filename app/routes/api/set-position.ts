@@ -13,9 +13,9 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   await setPosition(parsed.data)
-  return redirect("/")
-
+  return redirect('/')
 }
+
 const setPosition = async (input: z.infer<typeof positionParser>) => {
   const anchor = await db.story.findFirst({
     where: { id: input.storyAnchor },
@@ -35,9 +35,7 @@ const setPosition = async (input: z.infer<typeof positionParser>) => {
 
     position =
       anchor.position +
-      (afterAnchor?.position
-        ? (afterAnchor.position - anchor.position) / 2
-        : 1)
+      (afterAnchor?.position ? (afterAnchor.position - anchor.position) / 2 : 1)
   } else {
     const beforeAnchor = await db.story.findFirst({
       orderBy: { position: 'desc' },

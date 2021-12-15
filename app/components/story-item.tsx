@@ -21,7 +21,7 @@ export default function StoryItem({
       <summary className="flex items-start justify-between p-4 py-3 text-xl font-semibold">
         <span className="capitalize-first">{story.iWant}</span>
         <div className="flex border divide-x rounded">
-          <Form method="post" action="/set-position">
+          <Form method="post" action="/api/set-position">
             <input type="hidden" value={story.id} name="storyId" />
             <input type="hidden" value={anchorBefore} name="storyAnchor" />
             <input type="hidden" value="before" name="relativePosition" />
@@ -63,7 +63,7 @@ export default function StoryItem({
       {story.state === 'draft' && (
         <div className="flex flex-col p-4">
           <button
-            onClick={async () => { }}
+            onClick={async () => {}}
             className="p-2 transition-all bg-green-500 rounded hover:bg-green-600"
           >
             mark as ready to start
@@ -73,7 +73,7 @@ export default function StoryItem({
       {story.state === 'ready' && (
         <div className="flex flex-col p-4">
           <button
-            onClick={async () => { }}
+            onClick={async () => {}}
             className="p-2 transition-all bg-green-500 rounded hover:bg-green-600"
           >
             start development
