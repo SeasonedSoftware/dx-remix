@@ -2,14 +2,14 @@ import * as React from 'react'
 import { z } from 'zod'
 import { useLoaderData, useActionData } from 'remix'
 import { groupBy } from 'lodash'
-import { createParser, storyParser } from '~/stories/parsers'
+import { createParser, storyParser } from '~/domain/stories/parsers'
 import { db } from '~/db/prisma.server'
-import { getStories } from '~/stories/queries.server'
+import { stories } from '~/domain/stories'
 
 import StoriesList from '~/components/stories-list'
 import StoryForm from '~/components/story-form'
 
-import type { Story } from '~/stories/types'
+import type { Story } from '~/domain/stories/types'
 import type { MetaFunction, LoaderFunction, ActionFunction } from 'remix'
 
 export let meta: MetaFunction = () => {
@@ -20,22 +20,12 @@ export let meta: MetaFunction = () => {
 }
 
 export let loader: LoaderFunction = async () => {
-  return getStories()
+  return stories.getStories()
 }
 
 type ActionData = { success: boolean; errors?: z.ZodIssue[] | undefined }
-export let action: ActionFunction = async ({
-  request,
-}): Promise<ActionData> => {
-  const form = await request.formData()
-  const data = Object.fromEntries(form)
-  const parsed = createParser.safeParse(data)
-  if (parsed.success === false) {
-    return { success: false, errors: parsed.error.issues }
-  }
-
-  await db.story.create({ data: parsed.data })
-  return { success: true }
+export let action: ActionFunction = async (args): Promise<ActionData> => {
+  return stories.createStory(args)
 }
 
 export default function Index() {

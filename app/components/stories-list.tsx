@@ -1,6 +1,6 @@
 import StoryItem from '~/components/story-item'
 
-import type { Story } from '~/stories/types'
+import type { Story } from '~/domain/stories/types'
 
 type ChangePositionFn = (
   storyId: string,

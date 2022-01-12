@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/outline'
 
-import type { Story } from '~/stories/types'
+import type { Story } from '~/domain/stories/types'
 
 type Props = {
   story: Story
