@@ -3,15 +3,20 @@ import { DataFunctionArgs } from '@remix-run/server-runtime'
 import { db } from '~/db/prisma.server'
 import * as z from 'zod'
 
-import type { MetaFunction, LoaderFunction, ActionFunction } from 'remix'
+import type { LoaderFunction, ActionFunction } from 'remix'
+
+type DomainAction<I extends z.ZodTypeAny = z.ZodTypeAny, O = unknown> = {
+  mutation: boolean
+  parser?: I
+  run: (input: z.infer<I>) => Promise<O>
+}
 
 
-const baseStories = {
-  getStories:
-  {
-    mutation: false,
-    run: async () => {
-      return db.$queryRaw`
+const getStories: DomainAction =
+{
+  mutation: false,
+  run: async () => {
+    return db.$queryRaw`
       SELECT
         s.id,
         as_a as "asA",
@@ -33,19 +38,19 @@ const baseStories = {
         END as state
       FROM story s
       ORDER BY position ASC`
-    }
-  },
-  createStory: {
-    mutation: true,
-    run: async (data: z.infer<typeof createParser>) => {
-      await db.story.create({ data })
-      return { success: true }
-    }
+  }
+}
+
+const createStory: DomainAction = {
+  mutation: true,
+  run: async (data: z.infer<typeof createParser>) => {
+    await db.story.create({ data })
+    return { success: true }
   }
 }
 
 type ExportedActions = Record<string, LoaderFunction | ActionFunction>
-const loader: LoaderFunction = baseStories.getStories.run
+const loader: LoaderFunction = getStories.run
 const action: ActionFunction = async ({ request }: DataFunctionArgs) => {
   const form = await request.formData()
   const data = Object.fromEntries(form)
@@ -54,7 +59,7 @@ const action: ActionFunction = async ({ request }: DataFunctionArgs) => {
     return { success: false, errors: parsed.error.issues }
   }
 
-  return baseStories.createStory.run(parsed.data)
+  return createStory.run(parsed.data)
 }
 
 const stories: ExportedActions = {
