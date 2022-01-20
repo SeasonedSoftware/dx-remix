@@ -19,8 +19,8 @@ export let meta: MetaFunction = () => {
   }
 }
 
-export let loader: LoaderFunction = async () => {
-  return stories.getStories()
+export let loader: LoaderFunction = async (args) => {
+  return stories.getStories(args)
 }
 
 type ActionData = { success: boolean; errors?: z.ZodIssue[] | undefined }

@@ -3,9 +3,15 @@ import { DataFunctionArgs } from '@remix-run/server-runtime'
 import { db } from '~/db/prisma.server'
 import * as z from 'zod'
 
+import type { MetaFunction, LoaderFunction, ActionFunction } from 'remix'
+
+
 const baseStories = {
-  async getStories() {
-    return db.$queryRaw`
+  getStories:
+  {
+    mutation: false,
+    run: async () => {
+      return db.$queryRaw`
       SELECT
         s.id,
         as_a as "asA",
@@ -27,27 +33,33 @@ const baseStories = {
         END as state
       FROM story s
       ORDER BY position ASC`
+    }
   },
-  async createStory(data: z.infer<typeof createParser>) {
-    await db.story.create({ data })
-    return { success: true }
-  },
+  createStory: {
+    mutation: true,
+    run: async (data: z.infer<typeof createParser>) => {
+      await db.story.create({ data })
+      return { success: true }
+    }
+  }
 }
 
-const stories = {
-  async getStories() {
-    return baseStories.getStories()
-  },
-  async createStory({ request }: DataFunctionArgs) {
-    const form = await request.formData()
-    const data = Object.fromEntries(form)
-    const parsed = createParser.safeParse(data)
-    if (parsed.success === false) {
-      return { success: false, errors: parsed.error.issues }
-    }
+type ExportedActions = Record<string, LoaderFunction | ActionFunction>
+const loader: LoaderFunction = baseStories.getStories.run
+const action: ActionFunction = async ({ request }: DataFunctionArgs) => {
+  const form = await request.formData()
+  const data = Object.fromEntries(form)
+  const parsed = createParser.safeParse(data)
+  if (parsed.success === false) {
+    return { success: false, errors: parsed.error.issues }
+  }
 
-    return baseStories.createStory(parsed.data)
-  },
+  return baseStories.createStory.run(parsed.data)
+}
+
+const stories: ExportedActions = {
+  getStories: loader,
+  createStory: action,
 }
 
 export { stories }
