@@ -11,11 +11,25 @@ type DomainAction<I extends z.ZodTypeAny = z.ZodTypeAny, O = unknown> = {
   run: (input: z.infer<I>) => Promise<O>
 }
 
+const query =
+  <O, P extends z.ZodTypeAny | undefined = undefined>(parser?: P) =>
+    (run: (input: P extends z.ZodTypeAny ? z.infer<P> : void) => Promise<O>) => ({
+      mutation: false,
+      parser,
+      run,
+    })
 
-const getStories: DomainAction =
-{
-  mutation: false,
-  run: async () => {
+const mutation =
+  <O, P extends z.ZodTypeAny | undefined = undefined>(parser?: P) =>
+    (run: (input: P extends z.ZodTypeAny ? z.infer<P> : void) => Promise<O>) => ({
+      mutation: true,
+      parser,
+      run,
+    })
+
+
+const getStories: DomainAction = query()(
+  async () => {
     return db.$queryRaw`
       SELECT
         s.id,
@@ -39,15 +53,14 @@ const getStories: DomainAction =
       FROM story s
       ORDER BY position ASC`
   }
-}
+)
 
-const createStory: DomainAction = {
-  mutation: true,
-  run: async (data: z.infer<typeof createParser>) => {
+const createStory = mutation(createParser)(
+  async (data: z.infer<typeof createParser>) => {
     await db.story.create({ data })
     return { success: true }
   }
-}
+)
 
 type ExportedActions = Record<string, LoaderFunction | ActionFunction>
 const loader: LoaderFunction = getStories.run
