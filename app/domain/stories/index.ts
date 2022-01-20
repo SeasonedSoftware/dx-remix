@@ -1,7 +1,7 @@
 import { createParser } from '~/domain/stories/parsers'
-import { DataFunctionArgs } from '@remix-run/server-runtime'
 import { db } from '~/db/prisma.server'
 import * as z from 'zod'
+import type { Story } from '~/domain/stories/types'
 
 import type { LoaderFunction, ActionFunction } from 'remix'
 import _ from 'lodash'
@@ -54,8 +54,10 @@ const exportAction = (action: DomainAction): ExportedAction => {
 
 const exportDomain = (domain: DomainActions): ExportedActions => _.mapValues(domain, exportAction)
 
+type DomainActionResult = { success: boolean; errors?: z.ZodIssue[] | undefined }
+
 const actions: DomainActions = {
-  getStories: query()(
+  getStories: query<Story[]>()(
     async () => {
       return db.$queryRaw`
         SELECT
@@ -81,8 +83,8 @@ const actions: DomainActions = {
         ORDER BY position ASC`
     }
   ),
-  createStory: mutation(createParser)(
-    async (data: z.infer<typeof createParser>) => {
+  createStory: mutation<DomainActionResult, typeof createParser>(createParser)(
+    async (data) => {
       await db.story.create({ data })
       return { success: true }
     }
@@ -91,3 +93,4 @@ const actions: DomainActions = {
 
 const stories = exportDomain(actions)
 export { stories }
+export type { DomainActionResult, Story }
