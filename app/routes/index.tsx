@@ -2,15 +2,14 @@ import * as React from 'react'
 import { z } from 'zod'
 import { useLoaderData, useActionData } from 'remix'
 import { groupBy } from 'lodash'
-import { createParser, storyParser } from '~/stories/parsers'
-import { db } from '~/db/prisma.server'
-import { getStories } from '~/stories/queries.server'
+import { storyParser } from '~/domain/stories/parsers'
+import { stories } from '~/domain/stories'
+import type { DomainActionResult, Story } from '~/domain/stories'
 
 import StoriesList from '~/components/stories-list'
 import StoryForm from '~/components/story-form'
 
-import type { Story } from '~/stories/types'
-import type { MetaFunction, LoaderFunction, ActionFunction } from 'remix'
+import type { MetaFunction } from 'remix'
 
 export let meta: MetaFunction = () => {
   return {
@@ -19,28 +18,13 @@ export let meta: MetaFunction = () => {
   }
 }
 
-export let loader: LoaderFunction = async () => {
-  return getStories()
-}
+export let loader = stories.getStories
 
-type ActionData = { success: boolean; errors?: z.ZodIssue[] | undefined }
-export let action: ActionFunction = async ({
-  request,
-}): Promise<ActionData> => {
-  const form = await request.formData()
-  const data = Object.fromEntries(form)
-  const parsed = createParser.safeParse(data)
-  if (parsed.success === false) {
-    return { success: false, errors: parsed.error.issues }
-  }
-
-  await db.story.create({ data: parsed.data })
-  return { success: true }
-}
+export let action = stories.createStory
 
 export default function Index() {
   let data = z.array(storyParser).parse(useLoaderData())
-  let actionData = useActionData<ActionData>()
+  let actionData = useActionData<DomainActionResult>()
   let [editing, setEditing] = React.useState<string | null>(null)
 
   let storyGroups = groupBy(data, 'state') as unknown as Record<
@@ -87,4 +71,4 @@ export default function Index() {
   )
 }
 
-export type { ActionData }
+export type { DomainActionResult }

@@ -4,14 +4,14 @@ import { Form } from 'remix'
 
 import TextArea from '~/components/textarea'
 
-import type { ActionData } from '~/routes'
+import type { DomainActionResult } from '~/domain/stories'
 
 function extractError(name: string, errors: z.ZodIssue[] | undefined) {
   return errors?.find((e) => e.path.includes(name))
 }
 
 type Props = {
-  data: ActionData | undefined
+  data: DomainActionResult | undefined
   editing: string | null
   setEditing: (id: string | null) => void
 }
