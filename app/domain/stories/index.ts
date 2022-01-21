@@ -52,7 +52,7 @@ const exportAction = (action: DomainAction): ExportedAction => {
   }
 }
 
-const exportDomain = (domain: DomainActions): ExportedActions => _.mapValues(domain, exportAction)
+const remixDomain = (domain: DomainActions): ExportedActions => _.mapValues(domain, exportAction)
 
 type DomainActionResult = { success: boolean; errors?: z.ZodIssue[] | undefined }
 
@@ -91,6 +91,6 @@ const actions: DomainActions = {
   ),
 }
 
-const stories = exportDomain(actions)
+const stories = remixDomain(actions)
 export { stories }
 export type { DomainActionResult, Story }
